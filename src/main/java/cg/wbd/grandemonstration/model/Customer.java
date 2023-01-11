@@ -1,16 +1,35 @@
 package cg.wbd.grandemonstration.model;
 
+import cg.wbd.grandemonstration.validator.UniqueEmail;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import javax.persistence.*;
 
 @Entity
-@Table
+@Table(name = "Customers")
+@UniqueEmail
 public class Customer implements Cloneable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @NotEmpty
+    @Size(max = 128)
     private String name;
+
+    @NotEmpty
+    @Email
+    @Size(max = 128)
     private String email;
+
+    @Size(max = 256)
     private String address;
+
+    @ManyToOne
+    @JoinColumn(name = "province_id")
+    private Province province;
 
     public Customer() {
     }
@@ -60,6 +79,14 @@ public class Customer implements Cloneable {
         this.address = address;
     }
 
+    public Province getProvince() {
+        return province;
+    }
+
+    public void setProvince(Province province) {
+        this.province = province;
+    }
+
     @Override
     public Customer clone() {
         Customer customer = new Customer();
@@ -67,6 +94,7 @@ public class Customer implements Cloneable {
         customer.setName(name);
         customer.setEmail(email);
         customer.setAddress(address);
+        customer.setProvince(province);
         return customer;
     }
 
@@ -77,6 +105,7 @@ public class Customer implements Cloneable {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", address='" + address + '\'' +
+                ", province=" + province +
                 '}';
     }
 }
